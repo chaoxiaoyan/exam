@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="js/jquery.js"></script>
+    <script src="layui/layui.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <style type="text/css">
+
+        table td {
+            text-align: center;
+        }
+        /*合并表格的边框*/
+
+        table {
+            width: 700px;
+            border-collapse: collapse;
+        }
+
+        h3 {
+            text-align: center;
+        }
+
+        div {
+            margin: 0 auto;
+            width: 700px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="text-align: center;margin-top: 50px">
+        <strong style="font-size: xx-large">电子文档列表</strong>
+    </div>
+    <div class="row" >
+        <div class="col-md-5">
+            <button style="margin-left: 50px" onclick="add()">新增电子文档</button>
+        </div>
+        <div class="col-md-4" >
+            <div class="col-md-8">
+                <select  name="type" class="form-control" id="type">
+                    <option>请选择</option>
+                    <!--<option v-for="t in types" value="{{t.type}}" >{{t.type}}</option>-->
+                    </span>
+
+                </select>
+            </div>
+            <div class="col-md-4">
+
+                <button  onclick="findByType()">查找</button>
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+    <div>
+
+    </div>
+
+    <div class="col-md-12" style="margin-top: 15px">
+        <table  class="layui-table" lay-even lay-skin="nob" id="dvdata">
+            <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>文档编号</th>
+                <th>文档名称</th>
+                <th>文档摘要</th>
+                <th>上传人</th>
+                <th>上传时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody >
+
+                    <tr v-for="d in infos">
+                        <td>{{d.id}}</td>
+                        <td>{{d.name}}</td>
+                        <td>{{d.descripe}}</td>
+                        <td>{{d.huanman}}</td>
+                        <td>{{d.createtime}}</td>
+                        <td><button @click="update(d.id)">修改</button>&nbsp;&nbsp;&nbsp;<button @click="del(d.id)">删除</button> </td>
+
+
+                    </tr>
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<script type="application/javascript">
+   
+    var  app = new Vue({
+        el:"#dvdata",
+        data:{
+            infos:[]
+        },
+        methods:{
+            update:function (id) {
+                window.location.href="update.html?id="+id;
+            },
+            del:function (id) {
+                var ret = window.confirm("是否删除");
+                if (ret == false) {
+                    return;
+                }
+                $.ajax({
+                    url:'delete.do?id='+id,
+                    method:"get",
+                    success:function (data) {
+                        window.location.href="index.html";
+                    }
+                })
+            }
+
+        }
+    })
+    $(function () {
+        $.ajax({
+            url:"list.do",
+            methods:"get",
+            success:function(data) {
+                app.infos=data.info;
+            }
+        })
+        loadType();
+    })
+    function add() {
+        var type=$("select[name='type']").val();
+        window.location.href="add.html?type="+type;
+    }
+   
+</script>
+<script type="application/javascript">
+    var apptype = new Vue({
+        el:"#type",
+        data:{
+            types:[]
+        }
+    })
+    function findByType() {
+        $.ajax({
+            url:"findByType.do",
+            data:{
+                type:$("select[name='type']").val()
+            },
+            mehtod:"get",
+            success:function (data) {
+                app.infos=data.info;
+            }
+        })
+    }
+    function loadType() {
+        $.ajax({
+            url:"type.do",
+            methods:"get",
+            success:function (data) {
+                /*apptype.types=data.info;*/
+                var infos = data.info;
+                  $(infos).each(function () {
+                      var html = '<option value="'+this.type+'">'+ this.type+'</option>';
+                      $("#type").append($(html));
+                  })
+
+            }
+
+        })
+    }
+</script>
+
+</body>
+</html>

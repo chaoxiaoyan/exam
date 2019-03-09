@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>增加电子文档</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="js/jquery.js"></script>
+    <script src="layui/layui.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div style="text-align: center">
+            <strong style="font-size: xx-large;">增加电子文档</strong>
+        </div>
+        <form class="layui-form" action="" id="fm">
+            <div class="layui-form-item">
+                <label class="layui-form-label">文档名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" required  lay-verify="required"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">文档摘要</label>
+                <div class="layui-input-block">
+                    <textarea name="descripe" required  class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">上传人</label>
+                <div class="layui-input-block">
+                    <input type="text" name="huanman" required  lay-verify="required"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">上传时间</label>
+
+                <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+                    <input type="date"required name="createtime" class="layui-input">
+
+                </div>
+
+            </div>
+
+
+            </select>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button  class="layui-btn layui-btn-primary" onclick="fanhui()" style="background-color: #009688">返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            //layer.msg(JSON.stringify(data.field));
+            var params = window.location.search;
+           // alert(params);
+            $.ajax({
+                url:"add.do"+ params,
+                method:'post',
+                data:$("#fm").serialize(),
+                success:function (obj) {
+                    if (obj.code == 1) {
+                        layer.msg("添加成功");
+                        // alert(obj.info.uName);
+                        window.location.href="index.html";
+                    } else {
+                        layer.msg("添加失败"+ obj.code);
+                    }
+                }
+
+
+            })
+            return false;
+        });
+    });
+
+    function fanhui() {
+        window.location.href="index.html";
+    }
+
+
+</script>
+
+
+</body>
+</html>
